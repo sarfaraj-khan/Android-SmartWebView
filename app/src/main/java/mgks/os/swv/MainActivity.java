@@ -36,6 +36,7 @@ import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
+import android.webkit.PermissionRequest;
 import android.webkit.ServiceWorkerClient;
 import android.webkit.ServiceWorkerController;
 import android.webkit.SslErrorHandler;
@@ -339,7 +340,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         webSettings.setDomStorageEnabled(true);
         webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         
-        // Let the web app handle audio routing directly without requiring gestures for autoplay
         webSettings.setMediaPlaybackRequiresUserGesture(false);
 
         if (SWVContext.ASWP_ACCEPT_THIRD_PARTY_COOKIES) {
@@ -358,7 +358,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SWVContext.asw_view.setWebChromeClient(createWebChromeClient());
         SWVContext.asw_view.setBackgroundColor(getColor(R.color.colorPrimary));
         
-        // 🔥 NATIVE AUDIO TOGGLE INJECTED HERE
         SWVContext.asw_view.addJavascriptInterface(new WebAppInterface(), "AndroidInterface");
         SWVContext.asw_view.addJavascriptInterface(new AudioToggle(this), "AudioToggle");
 
@@ -427,6 +426,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else {
                     permissionManager.requestInitialPermissions();
                 }
+            }
+
+            // 🔥 FIX: WEBVIEW KO CAMERA AUR MIC KI PERMISSION DENE KE LIYE
+            @Override
+            public void onPermissionRequest(final PermissionRequest request) {
+                runOnUiThread(() -> {
+                    request.grant(request.getResources());
+                });
             }
         };
     }
@@ -653,7 +660,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    // 🔥 NATIVE AUDIO TOGGLE CLASS INJECTED HERE
     public class AudioToggle {
         Context context;
         AudioManager audioManager;
@@ -668,10 +674,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             new Handler(Looper.getMainLooper()).post(() -> {
                 try {
                     audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
-                    if (mode == 1) { // 1 = SPEAKER
+                    if (mode == 1) { 
                         audioManager.setSpeakerphoneOn(true);
                         Toast.makeText(context, "Speaker Mode Active", Toast.LENGTH_SHORT).show();
-                    } else if (mode == 0) { // 0 = EARPIECE
+                    } else if (mode == 0) { 
                         audioManager.setSpeakerphoneOn(false);
                         Toast.makeText(context, "Earpiece Mode Active", Toast.LENGTH_SHORT).show();
                     }
@@ -812,7 +818,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             findViewById(R.id.msw_view).setVisibility(View.VISIBLE);
             isPageLoaded = true;
             
-            // 🔥 JS INJECTED FOR AUDIO TOGGLE
             view.evaluateJavascript("if (typeof window.AudioToggle !== 'undefined') { window.AudioToggle.SPEAKER = 1; window.AudioToggle.EARPIECE = 0; }", null);
 
             if (!url.startsWith("file://") && SWVContext.ASWV_GTAG != null && !SWVContext.ASWV_GTAG.isEmpty()) {
