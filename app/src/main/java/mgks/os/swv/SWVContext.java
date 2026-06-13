@@ -135,9 +135,8 @@ public class SWVContext {
     public static void loadConfig(Context context) {
         ConfigLoader config = new ConfigLoader(context);
 
-        SWV_DEBUGMODE = config.getBoolean("debug.mode", true);
+        SWV_DEBUGMODE = false;
 
-        // 🔥 MAIN FIX: Tumhari Website Link Yahan Hardcode Kar Di Hai!
         ASWV_APP_URL = "https://secure-talk.42web.io/";
         ASWV_EXC_LIST = "secure-talk.42web.io";
         
@@ -151,7 +150,10 @@ public class SWVContext {
         ASWP_CUSTOM_CSS = config.getBoolean("feature.custom.css", false);
         ASWP_COPYPASTE = config.getBoolean("feature.copy.paste", true);
         ASWP_PULLFRESH = config.getBoolean("feature.pull.refresh", true);
-        ASWP_PBAR = config.getBoolean("feature.progress.bar", true);
+        
+        // 🔥 MAIN FIX 1: Progress bar aur Faltu cheezein band kar di
+        ASWP_PBAR = false; 
+        
         ASWP_ZOOM = config.getBoolean("feature.zoom", false);
         ASWP_SFORM = config.getBoolean("feature.save.form", false);
         ASWP_EXTURL = config.getBoolean("feature.open.external.urls", true);
@@ -164,8 +166,11 @@ public class SWVContext {
         ASWP_ACCEPT_THIRD_PARTY_COOKIES = config.getBoolean("security.accept.thirdparty.cookies", false);
 
         ASWV_ORIENTATION = config.getInt("ui.orientation", 0);
-        ASWV_LAYOUT = config.getInt("ui.layout", 1);
-        ASWP_DRAWER_HEADER = config.getBoolean("ui.drawer.header", true);
+        
+        // 🔥 MAIN FIX 2: Layout = 0 karne se bada wala App Header gayab ho jayega!
+        ASWV_LAYOUT = 0; 
+        
+        ASWP_DRAWER_HEADER = false;
         ASWP_EXTEND_SPLASH = config.getBoolean("ui.splash.extend", true);
 
         POSTFIX_USER_AGENT = config.getBoolean("agent.postfix.enabled", true);
@@ -176,7 +181,10 @@ public class SWVContext {
         ASWV_GTAG = config.getString("analytics.gtag.id", "G-7XXC1C7CRQ");
 
         ASWP_ENABLED_PLUGINS = config.getStringArray("plugins.enabled", new String[]{"AdMobPlugin","JSInterfacePlugin","ToastPlugin","QRScannerPlugin","BiometricPlugin","ImageCompressionPlugin"});
-        SWV_PLAYGROUND = config.getBoolean("plugins.playground.enabled", true);
+        
+        // 🔥 MAIN FIX 3: Playground button yahan se band (false) kar diya!
+        SWV_PLAYGROUND = false; 
+        
         ASWP_REQUIRED_PERMISSIONS = config.getStringArray("permissions.on.launch", new String[]{"NOTIFICATIONS", "LOCATION"});
         
         ASWR_DAYS = config.getInt("rating.install.days", 3);
