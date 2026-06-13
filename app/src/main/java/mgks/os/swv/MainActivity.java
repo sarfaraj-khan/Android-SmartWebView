@@ -463,6 +463,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         fns.get_info(this);
 
+        // 🔥 NAYA CODE: APP KHULTE HI CAMERA/MIC PERMISSION MAANGNE KA POPUP AAYEGA
+        ActivityCompat.requestPermissions(this, new String[]{
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.MODIFY_AUDIO_SETTINGS
+        }, 111);
+
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             permissionManager.requestInitialPermissions();
         }, 1500);
